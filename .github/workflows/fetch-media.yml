@@ -1,0 +1,53 @@
+name: Fetch media
+on:
+  push:
+    branches: [main]
+    paths: ["fetch/*.json"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download images listed in fetch/*.json into media/
+        run: |
+          pip install --quiet pillow
+          python3 - <<'PY'
+          import json, glob, os, io, urllib.request
+          from PIL import Image
+          os.makedirs("media", exist_ok=True)
+          report = []
+          for mf in sorted(glob.glob("fetch/*.json")):
+              items = json.load(open(mf))
+              for it in items:
+                  name, url = it["name"], it["url"]
+                  crop = it.get("crop")  # optional [w, h] target size, centre crop
+                  try:
+                      req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0", "Referer": it.get("referer", "")})
+                      data = urllib.request.urlopen(req, timeout=60).read()
+                      im = Image.open(io.BytesIO(data)).convert("RGB")
+                      if crop:
+                          tw, th = crop
+                          s = max(tw / im.width, th / im.height)
+                          im = im.resize((round(im.width * s), round(im.height * s)), Image.LANCZOS)
+                          l, t = (im.width - tw) // 2, (im.height - th) // 2
+                          im = im.crop((l, t, l + tw, t + th))
+                      elif im.width > 1080:
+                          im = im.resize((1080, round(im.height * 1080 / im.width)), Image.LANCZOS)
+                      im.save(os.path.join("media", name), "JPEG", quality=90)
+                      report.append(f"OK {name} {im.width}x{im.height}")
+                  except Exception as e:
+                      report.append(f"FAIL {name} {e}")
+              os.remove(mf)
+          open("media/_last_fetch.txt", "w").write("\n".join(report) + "\n")
+          print("\n".join(report))
+          PY
+      - name: Commit
+        run: |
+          git config user.name "nexus-bot"
+          git config user.email "nexus-bot@users.noreply.github.com"
+          git add -A media fetch
+          git commit -m "Fetch media" || echo "nothing to commit"
+          git push
