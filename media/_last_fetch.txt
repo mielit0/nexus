@@ -1,7 +1,7 @@
-OK veille/nx-wienermobile-01.jpg 2048x1536
-OK veille/nx-wienermobile-03.jpg 1120x800
-OK veille/nx-wienermobile-02.jpg 3623x2158
-OK veille/nx-nakagin-02.jpg 960x1280
-OK veille/nx-nakagin-03.jpg 960x720
-OK veille/nx-nakagin-04.jpg 960x720
-OK veille/nx-nakagin-01.jpg 640x640
+OK veille/nx-computer-space-01.jpg 960x1901
+OK veille/nx-computer-space-03.jpg 960x720
+OK veille/nx-computer-space-02.jpg 960x628
+OK veille/nx-venus-basket-02.jpg 960x740
+OK veille/nx-venus-basket-01.jpg 960x540
+OK veille/nx-venus-basket-03.jpg 960x535
+OK veille/nx-venus-basket-04.jpg 960x540
