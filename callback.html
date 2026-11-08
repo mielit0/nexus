@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>NEXUS Studio – Authorized</title><link rel="stylesheet" href="style.css"></head><body>
+<h1>Authorization</h1><p id="m">…</p>
+<script>
+const p=new URLSearchParams(location.search);
+document.getElementById('m').textContent=p.get('code')?('Code: '+p.get('code')):('Error: '+(p.get('error_description')||p.get('error')||'no code'));
+</script></body></html>
