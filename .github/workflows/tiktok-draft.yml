@@ -1,0 +1,58 @@
+name: TikTok draft
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: Post title (max 90 chars)
+        required: true
+      description:
+        description: Caption
+        required: true
+      images:
+        description: Comma-separated image URLs on mielit0.github.io/nexus/media/
+        required: true
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send carousel to TikTok inbox
+        env:
+          TT_CREDS: ${{ secrets.TT_CREDS }}
+          IN_TITLE: ${{ inputs.title }}
+          IN_DESC: ${{ inputs.description }}
+          IN_IMAGES: ${{ inputs.images }}
+        run: |
+          python3 - <<'PY'
+          import json, os, time, urllib.request, urllib.parse
+          c = json.loads(os.environ["TT_CREDS"])
+          def post(url, data, headers):
+              req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+              with urllib.request.urlopen(req) as r:
+                  return json.loads(r.read())
+          tok = post("https://open.tiktokapis.com/v2/oauth/token/",
+                     urllib.parse.urlencode({"client_key": c["ck"], "client_secret": c["cs"],
+                                             "grant_type": "refresh_token", "refresh_token": c["rt"]}).encode(),
+                     {"Content-Type": "application/x-www-form-urlencoded"})
+          at = tok.get("access_token")
+          if not at:
+              raise SystemExit("refresh failed: %s" % tok)
+          h = {"Authorization": "Bearer " + at, "Content-Type": "application/json; charset=UTF-8"}
+          imgs = [u.strip() for u in os.environ["IN_IMAGES"].split(",") if u.strip()]
+          body = {"media_type": "PHOTO", "post_mode": "MEDIA_UPLOAD",
+                  "post_info": {"title": os.environ["IN_TITLE"][:90], "description": os.environ["IN_DESC"]},
+                  "source_info": {"source": "PULL_FROM_URL", "photo_cover_index": 0, "photo_images": imgs}}
+          r = post("https://open.tiktokapis.com/v2/post/publish/content/init/", json.dumps(body).encode(), h)
+          print("init:", json.dumps(r))
+          pid = (r.get("data") or {}).get("publish_id")
+          if not pid:
+              raise SystemExit(1)
+          for _ in range(20):
+              time.sleep(6)
+              s = post("https://open.tiktokapis.com/v2/post/publish/status/fetch/", json.dumps({"publish_id": pid}).encode(), h)
+              st = (s.get("data") or {}).get("status")
+              print("status:", st, json.dumps(s.get("data")))
+              if st in ("SEND_TO_USER_INBOX", "PUBLISH_COMPLETE", "FAILED"):
+                  break
+          if st != "SEND_TO_USER_INBOX" and st != "PUBLISH_COMPLETE":
+              raise SystemExit("not delivered: %s" % st)
+          PY
