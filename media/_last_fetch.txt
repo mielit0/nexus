@@ -1,7 +1,7 @@
-OK veille/nx-en-l-an-2000-01.jpg 1506x876
-OK veille/nx-en-l-an-2000-02.jpg 1208x794
-OK veille/nx-en-l-an-2000-03.jpg 600x352
-OK veille/nx-en-l-an-2000-04.jpg 1205x798
-OK veille/nx-first-selfie-01.jpg 1774x2364
-OK veille/nx-first-selfie-02.jpg 2455x1708
-OK veille/nx-first-selfie-03.jpg 2006x2633
+OK veille/nx-wienermobile-01.jpg 2048x1536
+OK veille/nx-wienermobile-03.jpg 1120x800
+OK veille/nx-wienermobile-02.jpg 3623x2158
+OK veille/nx-nakagin-02.jpg 960x1280
+OK veille/nx-nakagin-03.jpg 960x720
+OK veille/nx-nakagin-04.jpg 960x720
+OK veille/nx-nakagin-01.jpg 640x640
