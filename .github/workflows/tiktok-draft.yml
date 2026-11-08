@@ -23,12 +23,17 @@ jobs:
           IN_IMAGES: ${{ inputs.images }}
         run: |
           python3 - <<'PY'
-          import json, os, time, urllib.request, urllib.parse
+          import json, os, time, urllib.request, urllib.parse, urllib.error
           c = json.loads(os.environ["TT_CREDS"])
           def post(url, data, headers):
               req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-              with urllib.request.urlopen(req) as r:
-                  return json.loads(r.read())
+              try:
+                  with urllib.request.urlopen(req) as r:
+                      return json.loads(r.read())
+              except urllib.error.HTTPError as e:
+                  body = e.read().decode(errors="replace")
+                  print("HTTP", e.code, body)
+                  raise SystemExit("TikTok API error %s: %s" % (e.code, body))
           tok = post("https://open.tiktokapis.com/v2/oauth/token/",
                      urllib.parse.urlencode({"client_key": c["ck"], "client_secret": c["cs"],
                                              "grant_type": "refresh_token", "refresh_token": c["rt"]}).encode(),
