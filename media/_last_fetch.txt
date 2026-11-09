@@ -1,7 +1,8 @@
-OK veille/nx-arpanet-lo-01.jpg 960x643
-OK veille/nx-arpanet-lo-02.jpg 960x1464
-OK veille/nx-arpanet-lo-03.jpg 960x643
-OK veille/nx-baarle-01.jpg 960x1280
-OK veille/nx-baarle-02.jpg 960x720
-OK veille/nx-baarle-03.jpg 960x431
-OK veille/nx-baarle-04.jpg 960x720
+OK veille/nx-dancing-plague-01.jpg 960x1224
+OK veille/nx-dancing-plague-02.jpg 960x1325
+OK veille/nx-dancing-plague-03.jpg 960x1298
+OK veille/nx-dancing-plague-04.jpg 960x718
+OK veille/nx-dymaxion-car-01.jpg 960x638
+OK veille/nx-dymaxion-car-02.jpg 960x719
+OK veille/nx-dymaxion-car-03.jpg 960x720
+OK veille/nx-dymaxion-car-04.jpg 960x480
